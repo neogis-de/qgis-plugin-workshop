@@ -1,0 +1,22 @@
+
+Prerequisites
+
+Reference documentation
+
+The python console
+
+QGIS API fundamentals
+
+Creating a plugin with the Builder
+
+example plugins:
+
+ showing a list of layers
+ creating a random layer
+ showing a better-looking list of layers
+ searching a given feature
+ dynamic hillshading
+ showing a terrain profile
+ a layer loader with preview
+
+
