@@ -24,29 +24,28 @@ The first thing to change is the ``accept()`` method in the dialog class, so it 
 ::
 
 	def accept(self):
-		self.filepath = self.txtFilepath.text()
-		authid = self.txtCrs.text()
-		self.crs = QgsCoordinateReferenceSystem(authid)
-		if not self.crs.isValid():
-			self.setYellowBackground(self.txtCrs)
-			return
-		try:
-			self.npoints = int(self.txtNPoints.text())
-		except ValueError:
-			self.setYellowBackground(self.txtNPoints)
-			return
-		if self.npoints < 1:
-			self.setYellowBackground(self.txtNPoints)
-			return
+        self.filepath = self.ui.txtFilepath.text()
+        authid = self.ui.txtCrs.text()
+        self.crs = QgsCoordinateReferenceSystem(authid)
+        if not self.crs.isValid():
+            self.setYellowBackground(self.ui.txtCrs)
+            return
+        try:
+            self.npoints = int(self.ui.txtNPoints.text())
+        except ValueError:
+            self.setYellowBackground(self.ui.txtNPoints)
+            return
+        if self.npoints < 1:
+            self.setYellowBackground(self.ui.txtNPoints)
+            return
 
-		self.ok = True	
+        self.ok = True      
+		settings = QtCore.QSettings()
+		settings.setValue('/RandomLayerPlugin/crs', self.ui.txtCrs.text())
+		settings.setValue('/RandomLayerPlugin/npoints', self.ui.txtNPoints.text())
+		settings.setValue('/RandomLayerPlugin/filepath', self.ui.txtFilepath.text())
 
-		settings = QSettings()
-		settings.setValue('/RandomLayerPlugin/crs', self.txtCrs.text())
-		settings.setValue('/RandomLayerPlugin/npoints', self.txtNPoints.text())
-		settings.setValue('/RandomLayerPlugin/filepath', self.txtFilepath.text())
-
-		QDialog.accept(self)    
+		QtGui.QDialog.accept(self)    
 
 You should construct the path that identify your setting, including the name of the plugin and the name of the setting, to avoid problems with settings used by other plugins or QGIS itself. You can add more depth to the path if you need to. All settings are stored as text, and will be recovered as such.
 
@@ -54,30 +53,27 @@ Now we can use the settings that we have stored, by getting the and using them a
 
 ::
 
-	class RandomLayerPluginDialog(QtGui.QDialog):
-
-	    def __init__(self):
-	        QtGui.QDialog.__init__(self)
-	        # Set up the user interface from Designer.
-	        self.ui = Ui_RandomLayerPlugin()
-	        self.ui.setupUi(self)
-	        self.ok = False
-	        settings = QSettings()
-	        self.txtCrs.setText(settings.value('/RandomLayerPlugin/crs', ""))
-	        self.txtNPoints.setText(settings.value('/RandomLayerPlugin/npoints', ""))
-	        self.txtFilepath.setText(settings.value('/RandomLayerPlugin/filepath', ""))
+    def __init__(self):
+        QtGui.QDialog.__init__(self)
+        # Set up the user interface from Designer.
+        self.ui = Ui_RandomLayerPlugin()
+        self.ui.setupUi(self)
+        settings = QtCore.QSettings()
+        self.ui.txtCrs.setText(settings.value('/RandomLayerPlugin/crs', ""))
+        self.ui.txtNPoints.setText(settings.value('/RandomLayerPlugin/npoints', ""))
+        self.ui.txtFilepath.setText(settings.value('/RandomLayerPlugin/filepath', ""))
 
 Apart from reading our own setting, we can read settings stored by QGIS. One of these settings is the default encoding to use when writing files. If you remember, the vector writer was created with the following line:
 
 ::
 
-	writer = QgsVectorFileWriter(filepath, "CP1252", fields, QGis.WKBPoint, crs, "ESRI Shapefile")
+	writer = QgsVectorFileWriter(filepath, "UTF-8", fields, QGis.WKBPoint, crs, "ESRI Shapefile")
 
 The encoding is hardcoded. Instead of that, you can use the default encoding set by QGIS, replacing the above with these lines.
 
 ::
 
-	encoding = QSettings.value('/UI/encoding', 'System')
+	encoding = QSettings().value('/UI/encoding', 'System')
 	writer = QgsVectorFileWriter(filepath, encoding, fields, QGis.WKBPoint, crs, "ESRI Shapefile")
 
 If no encoding is set, the call to the ``value()`` method will return ``'System'`` as default value, which will cause QGIS to use the default system encoding.

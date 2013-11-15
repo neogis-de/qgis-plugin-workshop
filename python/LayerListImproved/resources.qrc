@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/plugins/layerlistplugin" >
+        <file>vector_icon.png</file>
+        <file>raster_icon.png</file>
+    </qresource>
+</RCC>

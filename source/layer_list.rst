@@ -74,9 +74,9 @@ A fully functional plugin (although one that does nothing yet) is now available 
 
 To put your code there, you can copy it manually or create a symlink to the plugin folder (the ``LayerListPlugin`` folder). Also, you can use the make file that the Plugin Builder has created for you, which has a ``deploy`` target that does exactly that. 
 
-.. note:: if you are on Windows, this target will not work, since it works only in unix-like OSs. You should manually copy the content of the folder and create a `C:\Users\<your_user>\.qgis2\python\plugins\LayerListPlugin`` folder)
+.. note:: if you are on Windows, this target will not work, since it works only in unix-like OSs. You should manually copy the content of the folder and create a ``C:\Users\<your_user>\.qgis2\python\plugins\LayerListPlugin`` folder)
 
-Open a console, move to the plugin folder an run that target
+Open a console, move to the plugin folder an run that target.
 
 ::
 
@@ -126,7 +126,7 @@ As you can see, the only file that we will be working with in this first lesson 
 	import os.path
 
 
-	class LayerListPluginPlugin:
+	class LayerList:
 
 	    def __init__(self, iface):
 	        # Save reference to the QGIS interface
@@ -145,7 +145,7 @@ As you can see, the only file that we will be working with in this first lesson 
 	                QCoreApplication.installTranslator(self.translator)
 
 	        # Create the dialog (after translation) and keep reference
-	        self.dlg = LayerListPluginPluginDialog()
+	        self.dlg = LayerListDialog()
 
 	    def initGui(self):
 	        # Create action that will start plugin configuration
