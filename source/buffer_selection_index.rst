@@ -32,5 +32,16 @@ Creating the spatial index takes time, so we do not create it each time that the
 We create the index and populate it by adding the features directly from the corresponding layer. Indexes are stores in a dict, using the layer ID as key, so we can later recover them easily.
 
 
-Once the index is created, when the canvas is clicked, instead of computing all distances, we let the idex do that work and return the list of indexes  
+Once the index is created, whenever the canvas is clicked, instead of computing all distances we let the index do that work and return the list of indexes inside the bounding polygon with a side equal to two times the specified radius (that, is the bounding box of the circle that defines the area that we want to select). Features outside that polygon are guaranteed not to be within the radius distance, so we ignore them. With the remaining ones, we calculate the distances and refine our searh to remove those that are within the rectangle but not within the search radius.
+
+Additional work
+****************
+
+Try the following ideas to improve the plugin and get soe extra practice.
+
+- You can pass a circle directly to the index, and get the list of features to select in one step. Notice, however, that there is no function to create a circle, and you have to create it as a polygon. This might cause soe imprecisions if the number or sides of the polygon is not large enough. On the other hand, a larger number of points will result in a a worse performance. Try yourself to implement that mechanism for selecting features.
+
+- If you create a detailed circle, you do not have to rebuild the geometry each time before calling the spatial index. Since the radius of the circle does not change, it is enough to just translate it to the new point where the user has clicked. Search in the QGIS API to know how to translate a geometry.
+
+
 
